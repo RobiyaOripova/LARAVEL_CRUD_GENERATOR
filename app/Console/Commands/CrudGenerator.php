@@ -48,7 +48,7 @@ class CrudGenerator extends Command
         $dbname = $this->argument('table');
         $paramName = lcfirst($name);
         $notUse = ['id', 'created_at', 'updated_at', 'deleted_at', 'is_deleted'];
-        // $this->model($name, $dbname);
+        $this->model($name, $dbname);
         $this->resource($name, $dbname);
         $this->request($name, $dbname, $notUse);
         $this->repository($name, $paramName, $dbname);
@@ -105,7 +105,7 @@ class CrudGenerator extends Command
         $files = ['poster', 'photo', 'icon', 'file', 'video'];
         $relations = '';
         if (in_array('lang_hash', $attributes)) {
-            $path .= 'use  '.config('system.crud-path.translatable').";\n";
+            $path .= 'use  ' . config('system.crud-path.translatable') . ";\n";
             $callTraits .= "\n\tuse Translatable;";
             $translatableFunctions .= $this->translatableFunctions();
 
@@ -137,7 +137,7 @@ class CrudGenerator extends Command
                 $modelNameToUpCase = ucfirst($modelName);
                 $path .= "use Illuminate\Database\Eloquent\Relations\BelongsTo;\n";
                 if (in_array($modelName, $files)) {
-                    if (! str_contains($path, 'Files')) {
+                    if (!str_contains($path, 'Files')) {
                         $path .= "use Modules\Filemanager\Entities\Files;\n";
                     }
 
@@ -217,7 +217,7 @@ AND column_name='{$column}';")[0];
                     break;
             }
             if (strtoupper($documentation) === 'SWAGGER') {
-                if (! in_array($attribute, $notUse)) {
+                if (!in_array($attribute, $notUse)) {
                     $fields .= "\n\t *  \t\t\t@OA\Property(property='$attribute',type='$type'),";
                     $fields = str_replace("'", '"', $fields);
                     $stub = $this->getStub('ControllerSwagger');
@@ -236,7 +236,7 @@ AND column_name='{$column}';")[0];
             $path = "/Http/Controllers/{$name}Controller.php";
             $namespace = '';
         } else {
-            $namespace = '\\'.str_replace('/', '\\', $path);
+            $namespace = '\\' . str_replace('/', '\\', $path);
             $path = "/Http/Controllers/{$path}/{$name}Controller.php";
         }
 
@@ -304,7 +304,7 @@ AND column_name='{$column}';")[0];
         $rulesUpdate = '';
         foreach ($attributes as $attribute) {
             $type = Schema::getColumnType($tableName, $attribute);
-            if (! in_array($attribute, $notUse)) {
+            if (!in_array($attribute, $notUse)) {
                 $columnInfo = $this->getColumnInfo($tableName, $attribute);
                 $maxLength = $columnInfo->character_maximum_length;
                 $ter = is_null($maxLength) ? null : "|max:{$maxLength}";
@@ -380,7 +380,7 @@ AND column_name='{$column}';")[0];
 
         foreach ($interfaces as $interface) {
             $fileName = substr($interface, 0, -13);
-            if (! str_contains($getProviderStub, $fileName)) {
+            if (!str_contains($getProviderStub, $fileName)) {
                 $bind .= "\n\t\t\$this->app->bind({$fileName}Interface::class, {$fileName}Repository::class);";
                 $path .= "\nuse App\Http\Interfaces\\{$fileName}Interface;";
                 $path .= "\nuse App\Http\Repositories\\{$fileName}Repository;";
@@ -407,12 +407,12 @@ AND column_name='{$column}';")[0];
     protected function createDirectory($name, $path, $plural)
     {
         if ($path === 'Request') {
-            if (! File::exists(base_path("app/Http/{$plural}/{$name}{$path}"))) {
+            if (!File::exists(base_path("app/Http/{$plural}/{$name}{$path}"))) {
                 mkdir(base_path("app/Http/{$plural}/{$name}{$path}"), 0777, true);
             }
 
         } else {
-            if (! File::exists(base_path("app/Http/{$plural}"))) {
+            if (!File::exists(base_path("app/Http/{$plural}"))) {
                 mkdir(base_path("app/Http/{$plural}"), 0777, true);
             }
         }
